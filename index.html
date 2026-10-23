@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Search Wikimedia Commons for images.">
+  <title>Image Search</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">DISCOVER SOMETHING NEW</p>
+      <h1>Image Search</h1>
+      <p class="intro">Find photographs and illustrations from Wikimedia Commons.</p>
+    </header>
+
+    <form id="searchForm" class="search-form">
+      <label class="sr-only" for="searchInput">Search for images</label>
+      <input id="searchInput" name="query" type="search" placeholder="Try mountains, cats, or space…" autocomplete="off" required>
+      <button type="submit">Search images</button>
+    </form>
+
+    <p id="status" class="status" role="status" aria-live="polite">Enter a search term to get started.</p>
+    <p id="resultCount" class="result-count" aria-live="polite"></p>
+    <section id="results" class="results" aria-label="Image search results"></section>
+
+    <footer>Images provided by Wikimedia Commons. Open an image to view its source page.</footer>
+  </main>
+</body>
+</html>
