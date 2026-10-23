@@ -37,15 +37,34 @@ h1 { margin: 10px 0; font-size: clamp(2.4rem, 6vw, 4.5rem); letter-spacing: -.05
 
 .status, .result-count { text-align: center; color: var(--muted); }
 .status { min-height: 24px; margin: 24px 0 8px; }
+.status.is-loading { display: flex; justify-content: center; align-items: center; gap: 10px; }
+.status.is-loading::before {
+  content: ""; width: 16px; height: 16px; flex: 0 0 16px;
+  border: 2px solid #d9d5ff; border-top-color: var(--accent);
+  border-radius: 50%; animation: spin .7s linear infinite;
+}
+.status.is-error { color: #b42318; }
 .result-count { font-size: .9rem; margin: 0 0 18px; }
 .results { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
-.image-card { overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 8px 24px #27335a0c; transition: transform .18s ease, box-shadow .18s ease; }
+.image-card {
+  overflow: hidden; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 16px; box-shadow: 0 8px 24px #27335a0c;
+  transition: transform .18s ease, box-shadow .18s ease;
+  animation: fade-up .35s ease both;
+}
 .image-card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px #27335a18; }
 .image-card a { display: block; color: inherit; text-decoration: none; }
 .image-card img { display: block; width: 100%; height: 190px; object-fit: cover; background: #edf0f6; }
 .image-card h2 { margin: 0; padding: 14px; font-size: .95rem; line-height: 1.45; overflow-wrap: anywhere; }
 footer { margin-top: 44px; text-align: center; color: var(--muted); font-size: .85rem; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+}
 
 @media (max-width: 520px) {
   .page { padding-top: 38px; }
