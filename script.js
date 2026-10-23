@@ -9,14 +9,17 @@ searchForm.addEventListener("submit", async (event) => {
 
   const query = searchInput.value.trim();
   if (!query) {
+    statusMessage.classList.remove("is-loading", "is-error");
     statusMessage.textContent = "Please enter a search term.";
     resultCount.textContent = "";
-    results.innerHTML = "";
+    results.replaceChildren();
     return;
   }
 
-  results.innerHTML = "";
+  results.replaceChildren();
   resultCount.textContent = "";
+  statusMessage.classList.remove("is-error");
+  statusMessage.classList.add("is-loading");
   statusMessage.textContent = "Searching for images…";
 
   const url = "https://commons.wikimedia.org/w/api.php" +
@@ -34,26 +37,30 @@ searchForm.addEventListener("submit", async (event) => {
   try {
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error("The image service returned an error (" + response.status + ").");
+      throw new Error("Image service returned HTTP " + response.status);
     }
 
     const data = await response.json();
     const pages = Object.values(data.query?.pages || {});
     const images = pages.filter((page) => page.imageinfo && page.imageinfo[0]);
 
+    statusMessage.classList.remove("is-loading");
+
     if (images.length === 0) {
-      statusMessage.textContent = "No images found. Try another search term.";
+      statusMessage.textContent = "No results for “" + query + "”. Try another search.";
       resultCount.textContent = "0 results";
       return;
     }
 
-    images.forEach((page) => {
+    images.forEach((page, index) => {
       const imageInfo = page.imageinfo[0];
       const imageUrl = imageInfo.thumburl || imageInfo.url;
-      const sourceUrl = "https://commons.wikimedia.org/wiki/" + encodeURIComponent(page.title).replace(/%3A/g, ":").replace(/%2F/g, "/");
+      const sourceUrl = "https://commons.wikimedia.org/wiki/" +
+        encodeURIComponent(page.title).replace(/%3A/g, ":").replace(/%2F/g, "/");
 
       const card = document.createElement("article");
       card.className = "image-card";
+      card.style.animationDelay = (Math.min(index, 8) * 35) + "ms";
 
       const link = document.createElement("a");
       link.href = sourceUrl;
@@ -76,9 +83,13 @@ searchForm.addEventListener("submit", async (event) => {
     });
 
     statusMessage.textContent = "Search complete.";
-    resultCount.textContent = "Showing " + images.length + " image" + (images.length === 1 ? "" : "s") + " for “" + query + "”.";
+    resultCount.textContent = "Showing " + images.length + " image" +
+      (images.length === 1 ? "" : "s") + " for “" + query + "”.";
   } catch (error) {
-    statusMessage.textContent = error.message || "Something went wrong. Please try again.";
+    console.error("Image search failed:", error);
+    statusMessage.classList.remove("is-loading");
+    statusMessage.classList.add("is-error");
+    statusMessage.textContent = "Something went wrong. Check your connection and try again.";
     resultCount.textContent = "";
   }
 });
